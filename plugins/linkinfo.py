@@ -3,8 +3,12 @@ import re, sys
 from util import hook, http, urlnorm
 
 @hook.command
+@hook.command("li")
 def linkinfo(inp):
     "Shows information for a link."
+
+    if not re.compile(r'^http://').match(inp):
+        inp = "http://" + inp
 
     try:
         page = http.get_html(inp)
@@ -12,7 +16,7 @@ def linkinfo(inp):
         return "Can't open URL."
 
     title = page.xpath('//title/text()')[0].replace("\n", "")
-    
+
     return smart_truncate(title)
 
 def smart_truncate(content, length=100, suffix='...'):
